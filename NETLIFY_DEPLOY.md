@@ -33,7 +33,7 @@
    - Configure build settings:
      - **Base directory:** `frontend`
      - **Build command:** `npm ci && npm run build`
-     - **Publish directory:** `frontend/build`
+     - **Publish directory:** `build` (relative to base directory)
      - **OR** let Netlify auto-detect from `netlify.toml`
 
 3. **Set Environment Variables:**
