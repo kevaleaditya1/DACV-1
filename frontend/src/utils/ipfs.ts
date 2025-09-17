@@ -6,6 +6,7 @@
 // IPFS Storage configuration - supports both NFT.Storage and Web3.Storage
 const NFT_STORAGE_API_KEY = process.env.REACT_APP_NFT_STORAGE_KEY || '';
 const WEB3_STORAGE_API_KEY = process.env.REACT_APP_WEB3_STORAGE_KEY || '';
+const IPFS_TEST_MODE = process.env.REACT_APP_IPFS_TEST_MODE === 'true';
 const NFT_STORAGE_ENDPOINT = 'https://api.nft.storage';
 const WEB3_STORAGE_ENDPOINT = 'https://api.web3.storage';
 
@@ -37,6 +38,10 @@ export interface IPFSUploadResult {
  * Check if IPFS is configured
  */
 export function isIPFSConfigured(): boolean {
+  // In test mode, always return true
+  if (IPFS_TEST_MODE) {
+    return true;
+  }
   return !!(NFT_STORAGE_API_KEY || WEB3_STORAGE_API_KEY);
 }
 
@@ -44,6 +49,16 @@ export function isIPFSConfigured(): boolean {
  * Upload a file to IPFS using NFT.Storage or Web3.Storage
  */
 export async function uploadFileToIPFS(file: File): Promise<string> {
+  // Test mode - return mock CID
+  if (IPFS_TEST_MODE) {
+    console.log('🧪 IPFS Test Mode: Simulating file upload for:', file.name);
+    // Generate a mock CID based on file name and timestamp
+    const mockCID = `QmTest${Date.now()}${file.name.replace(/[^a-zA-Z0-9]/g, '')}`.substring(0, 46);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate upload delay
+    console.log('🧪 Mock CID generated:', mockCID);
+    return mockCID;
+  }
+
   if (!STORAGE_API_KEY) {
     throw new Error(`${USE_WEB3_STORAGE ? 'Web3.Storage' : 'NFT.Storage'} API key not configured. Please set REACT_APP_${USE_WEB3_STORAGE ? 'WEB3' : 'NFT'}_STORAGE_KEY.`);
   }
@@ -153,6 +168,13 @@ export async function uploadCredential(
  * Retrieve content from IPFS
  */
 export async function retrieveFromIPFS(cid: string): Promise<string> {
+  if (IPFS_TEST_MODE) {
+    console.log('🧪 IPFS Test Mode: Simulating file retrieval for CID:', cid);
+    // Return mock content based on CID
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    return `Mock content for CID: ${cid}`;
+  }
+  
   try {
     const response = await fetch(`https://nftstorage.link/ipfs/${cid}`);
     if (!response.ok) {
@@ -169,6 +191,23 @@ export async function retrieveFromIPFS(cid: string): Promise<string> {
  * Retrieve JSON data from IPFS
  */
 export async function retrieveJSONFromIPFS(cid: string): Promise<any> {
+  if (IPFS_TEST_MODE) {
+    console.log('🧪 IPFS Test Mode: Simulating JSON retrieval for CID:', cid);
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    // Return mock credential metadata
+    return {
+      name: "Mock Credential",
+      description: "Test credential for demonstration",
+      credentialType: "degree",
+      issuer: "0x0000000000000000000000000000000000000000",
+      student: "0x0000000000000000000000000000000000000000",
+      issueDate: new Date().toISOString(),
+      university: "Test University",
+      country: "Test Country",
+      cid: cid
+    };
+  }
+  
   try {
     const text = await retrieveFromIPFS(cid);
     return JSON.parse(text);
@@ -237,6 +276,15 @@ export function getIPFSStatus(): {
   endpoint: string;
   keyPreview: string;
 } {
+  if (IPFS_TEST_MODE) {
+    return {
+      configured: true,
+      endpoint: 'Test Mode',
+      keyPreview: 'Test Mode (No API Key Required)',
+      message: 'IPFS is running in test mode - files will be mocked'
+    };
+  }
+  
   const configured = isIPFSConfigured();
   return {
     configured,
@@ -252,6 +300,11 @@ export function getIPFSStatus(): {
  * Test IPFS connection
  */
 export async function testIPFSConnection(): Promise<boolean> {
+  if (IPFS_TEST_MODE) {
+    console.log('🧪 IPFS Test Mode: Connection test successful (mocked)');
+    return true;
+  }
+  
   if (!STORAGE_API_KEY) {
     console.error(`${USE_WEB3_STORAGE ? 'Web3.Storage' : 'NFT.Storage'} API key not configured`);
     return false;
