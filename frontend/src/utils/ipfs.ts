@@ -27,6 +27,10 @@ export interface CredentialMetadata {
   major?: string;
   university: string;
   country: string;
+  fileCID?: string; // CID of the actual document file
+  fileName?: string; // Original filename
+  fileSize?: number; // File size in bytes
+  fileType?: string; // MIME type
 }
 
 export interface IPFSUploadResult {
@@ -148,11 +152,20 @@ export async function uploadCredential(
   metadata: CredentialMetadata
 ): Promise<IPFSUploadResult> {
   try {
-    // Upload both file and metadata in parallel
-    const [fileCID, metadataCID] = await Promise.all([
-      uploadFileToIPFS(credentialFile),
-      uploadCredentialMetadata(metadata),
-    ]);
+    // First upload the file to get its CID
+    const fileCID = await uploadFileToIPFS(credentialFile);
+    
+    // Add fileCID to metadata before uploading metadata
+    const metadataWithFileCID = {
+      ...metadata,
+      fileCID: fileCID,
+      fileName: credentialFile.name,
+      fileSize: credentialFile.size,
+      fileType: credentialFile.type
+    };
+    
+    // Then upload the enhanced metadata
+    const metadataCID = await uploadCredentialMetadata(metadataWithFileCID as CredentialMetadata);
 
     return {
       fileCID,
@@ -204,6 +217,10 @@ export async function retrieveJSONFromIPFS(cid: string): Promise<any> {
       issueDate: new Date().toISOString(),
       university: "Test University",
       country: "Test Country",
+      fileCID: `QmTestFile${Date.now()}Mock`,
+      fileName: "mock-certificate.pdf",
+      fileSize: 1024000,
+      fileType: "application/pdf",
       cid: cid
     };
   }

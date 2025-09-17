@@ -10,6 +10,8 @@ import {
   createCredentialMetadata,
   isIPFSConfigured,
   getIPFSStatus,
+  retrieveJSONFromIPFS,
+  getIPFSUrl,
   type CredentialMetadata
 } from '../utils/ipfs';
 // Import verification utilities
@@ -24,6 +26,8 @@ interface IssuedCredential {
   issueDate: string;
   ipfsHash: string;
   verificationUrl: string;
+  fileCID?: string; // For viewing the actual document
+  metadataCID?: string; // For credential metadata
 }
 
 const University: React.FC = () => {
@@ -45,6 +49,8 @@ const University: React.FC = () => {
     expiryDate: '',
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [viewingDocument, setViewingDocument] = useState<string | null>(null);
+  const [documentUrl, setDocumentUrl] = useState<string | null>(null);
 
   const loadIssuedCredentials = useCallback(async () => {
     if (!contract || !account) return;
@@ -56,6 +62,20 @@ const University: React.FC = () => {
       for (const id of credentialIds) {
         try {
           const result = await contract.verifyCredential(id);
+          
+          // Try to get file and metadata CIDs from IPFS metadata
+          let fileCID = '';
+          let metadataCID = result.ipfsHash || '';
+          
+          try {
+            if (metadataCID) {
+              const metadata = await retrieveJSONFromIPFS(metadataCID);
+              fileCID = metadata.fileCID || '';
+            }
+          } catch (error) {
+            console.log('Could not retrieve metadata for credential:', id);
+          }
+          
           credentials.push({
             id,
             student: result.student,
@@ -63,6 +83,8 @@ const University: React.FC = () => {
             issueDate: new Date(Number(result.issueDate) * 1000).toLocaleDateString(),
             ipfsHash: result.ipfsHash || '',
             verificationUrl: generateVerificationUrl(id, await contract.getAddress(), 17000),
+            fileCID,
+            metadataCID,
           });
         } catch (error) {
           console.error('Error loading credential:', error);
@@ -227,6 +249,43 @@ const University: React.FC = () => {
       console.error('Error revoking credential:', error);
       toast.error(error.message || 'Failed to revoke credential');
     }
+  };
+
+  const viewDocument = async (credential: IssuedCredential) => {
+    if (!credential.fileCID && !credential.metadataCID) {
+      toast.error('No document available for this credential');
+      return;
+    }
+
+    try {
+      setViewingDocument(credential.id);
+      
+      // If we have fileCID, use it directly; otherwise try to get it from metadata
+      let fileCID = credential.fileCID;
+      
+      if (!fileCID && credential.metadataCID) {
+        const metadata = await retrieveJSONFromIPFS(credential.metadataCID);
+        fileCID = metadata.fileCID;
+      }
+      
+      if (fileCID) {
+        const documentUrl = getIPFSUrl(fileCID);
+        setDocumentUrl(documentUrl);
+        console.log('Document URL:', documentUrl);
+      } else {
+        toast.error('Document file not found in IPFS');
+        setViewingDocument(null);
+      }
+    } catch (error) {
+      console.error('Error viewing document:', error);
+      toast.error('Failed to load document');
+      setViewingDocument(null);
+    }
+  };
+
+  const closeDocumentViewer = () => {
+    setViewingDocument(null);
+    setDocumentUrl(null);
   };
 
   if (!isConnected) {
@@ -472,6 +531,13 @@ const University: React.FC = () => {
                   </div>
                   <div className="flex space-x-2 ml-4">
                     <button
+                      onClick={() => viewDocument(credential)}
+                      className="btn-primary text-sm"
+                      disabled={!credential.fileCID && !credential.metadataCID}
+                    >
+                      View Document
+                    </button>
+                    <button
                       onClick={() => setShowQRCode(credential.id)}
                       className="btn-secondary text-sm"
                     >
@@ -511,6 +577,50 @@ const University: React.FC = () => {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Document Viewer Modal */}
+      {viewingDocument && documentUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-4xl w-full mx-4 h-5/6 flex flex-col">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-lg font-semibold">Document Viewer</h3>
+              <div className="flex space-x-2">
+                <a
+                  href={documentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary text-sm"
+                >
+                  Open in New Tab
+                </a>
+                <button
+                  onClick={closeDocumentViewer}
+                  className="btn-secondary text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 p-4">
+              {documentUrl.toLowerCase().includes('.pdf') ? (
+                <iframe
+                  src={documentUrl}
+                  className="w-full h-full border rounded"
+                  title="PDF Viewer"
+                />
+              ) : (
+                <div className="flex justify-center items-center h-full">
+                  <img
+                    src={documentUrl}
+                    alt="Document"
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
