@@ -32,8 +32,9 @@
    - Choose GitHub and select your repository
    - Configure build settings:
      - **Base directory:** `frontend`
-     - **Build command:** `npm run build`
+     - **Build command:** `npm ci && npm run build`
      - **Publish directory:** `frontend/build`
+     - **OR** let Netlify auto-detect from `netlify.toml`
 
 3. **Set Environment Variables:**
    Go to Site settings → Environment variables and add:
