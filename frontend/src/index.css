@@ -1,37 +1,110 @@
 @tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+  }
+}
+
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95;
   }
   
   .btn-primary {
-    @apply btn bg-blue-600 text-white hover:bg-blue-700 h-10 px-4 py-2;
+    @apply btn bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md h-10 px-4 py-2 sm:px-6;
   }
   
   .btn-secondary {
-    @apply btn bg-gray-100 text-gray-900 hover:bg-gray-200 h-10 px-4 py-2;
+    @apply btn bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300 h-10 px-4 py-2 sm:px-6;
   }
   
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700 h-10 px-4 py-2;
+    @apply btn bg-red-600 text-white hover:bg-red-700 shadow-sm hover:shadow-md h-10 px-4 py-2 sm:px-6;
   }
   
   .card {
-    @apply rounded-lg border bg-white p-6 shadow-sm;
+    @apply rounded-xl border bg-white shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-6;
   }
   
   .input {
-    @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 sm:h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm sm:text-base placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
   }
   
   .select {
-    @apply input;
+    @apply input cursor-pointer;
   }
   
   .textarea {
-    @apply flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex min-h-[80px] sm:min-h-[100px] w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm sm:text-base placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 resize-vertical transition-all duration-200;
+  }
+
+  /* Mobile-first responsive containers */
+  .container-responsive {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-12 mx-auto max-w-7xl;
+  }
+
+  /* Mobile-optimized spacing */
+  .section-spacing {
+    @apply py-6 sm:py-8 lg:py-12;
+  }
+
+  .content-spacing {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Grid responsive utilities */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8;
+  }
+
+  /* Typography responsive */
+  .heading-xl {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold;
+  }
+
+  .heading-lg {
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+  }
+
+  .heading-md {
+    @apply text-lg sm:text-xl lg:text-2xl font-semibold;
+  }
+
+  /* Status indicators */
+  .status-indicator {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-success {
+    @apply status-indicator bg-green-100 text-green-800;
+  }
+
+  .status-warning {
+    @apply status-indicator bg-yellow-100 text-yellow-800;
+  }
+
+  .status-error {
+    @apply status-indicator bg-red-100 text-red-800;
+  }
+
+  .status-info {
+    @apply status-indicator bg-blue-100 text-blue-800;
   }
 }
