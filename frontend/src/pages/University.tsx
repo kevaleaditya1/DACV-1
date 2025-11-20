@@ -290,32 +290,26 @@ const University: React.FC = () => {
 
   if (!isConnected) {
     return (
-      <div className="container-responsive section-spacing">
-        <div className="text-center">
-          <h1 className="heading-xl mb-4 text-gray-900">University Dashboard</h1>
-          <p className="text-gray-600 text-sm sm:text-base">Please connect your wallet to access the university dashboard.</p>
-        </div>
+      <div className="text-center py-12">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">University Dashboard</h1>
+        <p className="text-gray-600">Please connect your wallet to access the university dashboard.</p>
       </div>
     );
   }
 
   if (!isAuthorizedIssuer) {
     return (
-      <div className="container-responsive section-spacing">
-        <div className="text-center">
-          <h1 className="heading-xl mb-6 text-gray-900">University Dashboard</h1>
-          <div className="card max-w-md mx-auto">
-            <div className="text-4xl sm:text-6xl mb-4">🚫</div>
-            <h2 className="heading-md mb-4 text-gray-900">Not Authorized</h2>
-            <p className="text-gray-600 mb-6 text-sm sm:text-base">
-              Your wallet address is not registered as an authorized issuer. 
-              Please contact the system administrator to get your university registered.
-            </p>
-            <div className="bg-gray-50 p-3 sm:p-4 rounded-lg text-xs sm:text-sm text-gray-500 break-all">
-              <span className="font-medium">Your Address:</span>
-              <br className="sm:hidden" />
-              <span className="sm:ml-2">{account}</span>
-            </div>
+      <div className="text-center py-12">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">University Dashboard</h1>
+        <div className="card max-w-md mx-auto">
+          <div className="text-6xl mb-4">🚫</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Not Authorized</h2>
+          <p className="text-gray-600 mb-4">
+            Your wallet address is not registered as an authorized issuer. 
+            Please contact the system administrator to get your university registered.
+          </p>
+          <div className="bg-gray-50 p-3 rounded text-sm text-gray-500 break-all">
+            Your Address: {account}
           </div>
         </div>
       </div>
@@ -323,43 +317,43 @@ const University: React.FC = () => {
   }
 
   return (
-    <div className="container-responsive content-spacing section-spacing">
-      <div className="text-center mb-6 sm:mb-8">
-        <h1 className="heading-xl mb-2 text-gray-900">University Dashboard</h1>
-        <p className="text-gray-600 text-sm sm:text-base">Issue and manage academic credentials</p>
+    <div className="space-y-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">University Dashboard</h1>
+        <p className="text-gray-600">Issue and manage academic credentials</p>
       </div>
 
       {issuerInfo && (
         <div className="card">
-          <h2 className="heading-md mb-4 sm:mb-6 text-gray-900">Institution Information</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Institution Information</h2>
+          <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <span className="text-xs sm:text-sm text-gray-500 font-medium">Name</span>
-              <p className="font-semibold text-sm sm:text-base mt-1">{issuerInfo.name}</p>
+              <span className="text-sm text-gray-500">Name</span>
+              <p className="font-medium">{issuerInfo.name}</p>
             </div>
             <div>
-              <span className="text-xs sm:text-sm text-gray-500 font-medium">Country</span>
-              <p className="font-semibold text-sm sm:text-base mt-1">{issuerInfo.country}</p>
+              <span className="text-sm text-gray-500">Country</span>
+              <p className="font-medium">{issuerInfo.country}</p>
             </div>
-            <div className="sm:col-span-1 lg:col-span-1">
-              <span className="text-xs sm:text-sm text-gray-500 font-medium">Credentials Issued</span>
-              <p className="font-semibold text-sm sm:text-base mt-1">{issuerInfo.credentialsIssued?.toString()}</p>
+            <div>
+              <span className="text-sm text-gray-500">Credentials Issued</span>
+              <p className="font-medium">{issuerInfo.credentialsIssued?.toString()}</p>
             </div>
           </div>
           
           {/* IPFS Status */}
-          <div className="mt-6 p-3 sm:p-4 rounded-lg border border-gray-200 bg-gray-50">
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="mt-4 p-3 rounded border">
+            <div className="flex items-center space-x-2">
               <div className={`w-2 h-2 rounded-full ${
                 ipfsStatus.configured ? 'bg-green-500' : 'bg-red-500'
               }`}></div>
-              <span className="text-xs sm:text-sm font-semibold">
+              <span className="text-sm font-medium">
                 IPFS Status: {ipfsStatus.configured ? 'Connected' : 'Not Configured'}
               </span>
             </div>
-            <p className="text-xs text-gray-600">{ipfsStatus.message}</p>
+            <p className="text-xs text-gray-600 mt-1">{ipfsStatus.message}</p>
             {!ipfsStatus.configured && (
-              <p className="text-xs text-red-600 mt-2">
+              <p className="text-xs text-red-600 mt-1">
                 Please set REACT_APP_NFT_STORAGE_KEY in your environment to enable file uploads.
               </p>
             )}
