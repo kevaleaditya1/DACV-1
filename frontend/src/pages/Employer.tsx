@@ -155,7 +155,7 @@ const Employer: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Employer Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Verification Dashboard</h1>
         <p className="text-gray-600">Verify academic credentials instantly</p>
       </div>
 

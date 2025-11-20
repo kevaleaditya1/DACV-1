@@ -44,7 +44,7 @@ const Home: React.FC = () => {
       color: 'bg-green-500',
     },
     {
-      title: 'Employers',
+      title: 'Verify',
       description: 'Instantly verify candidate credentials',
       link: '/employer',
       icon: '💼',

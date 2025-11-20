@@ -18,7 +18,7 @@ const Header: React.FC = () => {
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/university', label: 'University', icon: '🎓' },
     { path: '/student', label: 'Student', icon: '👨‍🎓' },
-    { path: '/employer', label: 'Employer', icon: '🏢' },
+    { path: '/verify', label: 'Verify', icon: '🔍' },
   ];
 
   const toggleMobileMenu = () => {

@@ -7,7 +7,7 @@ export const config = {
     holesky: {
       chainId: 17000,
       name: 'Holesky Testnet',
-      rpcUrl: 'https://ethereum-holesky.publicnode.com',
+      rpcUrl: 'https://holesky.drpc.org',
       blockExplorer: 'https://holesky.etherscan.io',
     },
   },

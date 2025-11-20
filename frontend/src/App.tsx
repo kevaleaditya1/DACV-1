@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Web3Provider } from './contexts/Web3Context';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import University from './pages/University';
 import Student from './pages/Student';
@@ -22,6 +23,7 @@ function App() {
             <Route path="/verify" element={<Verify />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Web3Provider>
   );
